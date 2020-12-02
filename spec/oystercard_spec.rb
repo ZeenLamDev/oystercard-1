@@ -50,7 +50,7 @@ describe Oystercard do
   # describe '#touch_out' do
   #
   #   it 'Should return true if card has been touched out' do
-  #     expect(subject.touch_out).to eq false
+  #     expect(subject.touch_out(station)).to eq false
   #   end
   # end
   #
@@ -61,7 +61,7 @@ describe Oystercard do
   #   end
   #
   #   it 'Should return false if not in journey' do
-  #     subject.touch_out
+  #     subject.touch_out(station)
   #     expect(subject.in_journey?).to eq false
   #   end
   # end
@@ -97,7 +97,7 @@ describe Oystercard do
     it 'can touch out' do
       subject.top_up(50)
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject).not_to be_in_journey
     end
 
@@ -105,8 +105,8 @@ describe Oystercard do
       minimum_fare = Oystercard::MINIMUM_FARE
       subject.top_up(10)
       subject.touch_in(station)
-      subject.touch_out
-      expect{ subject.touch_out }.to change{ subject.balance }.by(-minimum_fare)
+      subject.touch_out(station)
+      expect{ subject.touch_out(station) }.to change{ subject.balance }.by(-minimum_fare)
     end
   end
 
@@ -117,6 +117,26 @@ describe Oystercard do
       subject.top_up(10)
       subject.touch_in(station)
       expect(subject.entry_station).to eq station
+    end
+  end
+
+  describe '#exit_station' do
+
+    it 'stores the exit station' do
+      subject.top_up(10)
+      subject.touch_in(station)
+      subject.touch_out(station)
+      expect(subject.exit_station).to eq station
+    end
+  end
+
+  describe "#history" do
+    
+    it 'adds entry_station and exit_station to history' do
+      subject.top_up(10)
+      subject.touch_in(station)
+      subject.touch_out(station)
+      expect(subject.history).to include({entry_station: station,  exit_station: station})
     end
   end
 
