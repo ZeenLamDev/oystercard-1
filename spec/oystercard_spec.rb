@@ -138,6 +138,10 @@ describe Oystercard do
       subject.touch_out(station)
       expect(subject.history).to include({entry_station: station,  exit_station: station})
     end
+
+    it 'returns an empty array on initialize' do
+      expect(subject.history).to eq []
+    end
   end
 
 end
