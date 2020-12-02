@@ -1,4 +1,5 @@
 require 'oystercard'
+require 'journey'
 
 describe Oystercard do
   let(:station){double :station}
@@ -107,9 +108,9 @@ describe Oystercard do
 
     it 'adds entry_station and exit_station to history' do
       subject.top_up(10)
-      subject.touch_in(station)
-      subject.touch_out(station)
-      expect(subject.history).to include({entry_station: station,  exit_station: station})
+      subject.touch_in("Piccadilly")
+      subject.touch_out("Waterloo")
+      expect(subject.history).to include({entry_station: "Piccadilly",  exit_station: "Waterloo"})
     end
 
     it 'returns an empty array on initialize' do

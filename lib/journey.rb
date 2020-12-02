@@ -1,38 +1,34 @@
-
 class Journey
 
-  attr_reader :entry_station, :exit_station
+  MINIMUM_FARE = 1
+  PENALTY_FARE = 6
+
+  attr_accessor :entry_station, :exit_station, :complete
 
   def initialize
-    @entry_station = entry_station
-    @exit_station = exit_station
-  end
-
-  def touch_in(station)
-    fail "Have insufficient funds" if @balance < MINIMUM_FARE
-
-    @entry_station = station
-  end
-
-  def touch_out(station)
-    deduct_fare(MINIMUM_FARE)
-
-    @exit_station = station
-    add_to_history
     @entry_station = nil
+    @exit_station = nil
+    @complete = false
   end
 
-  def in_journey?
-    !!entry_station
+  def fare
+    complete? ? MINIMUM_FARE : PENALTY_FARE
   end
 
-  def add_to_history
-    @history << {entry_station: @entry_station, exit_station: @exit_station}
+  def complete?
+    if @entry_station != nil && @exit_station != nil 
+     true
+    else
+      false
+    end
   end
 
-private
-  def deduct_fare(fare = MINIMUM_FARE)
-    @balance -= fare
+  def finish
+    @complete = true
+  end
+
+  def completed_journey
+    {:entry_station => entry_station, :exit_station => exit_station}
   end
 
 end
