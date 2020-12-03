@@ -1,4 +1,4 @@
-require './lib/oystercard'
+require './lib/journey'
 
 describe Journey do
   let(:station){double :station}
@@ -8,8 +8,8 @@ describe Journey do
       card = Oystercard.new
       card.top_up(15)
       subject.complete
-      card.touch_out("Waterloo")
-      expect(card.journey.fare).to eq Journey::PENALTY_FARE
+      card.touch_in("Waterloo")
+      expect(card.deduct).to eq Journey::PENALTY_FARE
     end
 
     it 'charges minimum fare' do
