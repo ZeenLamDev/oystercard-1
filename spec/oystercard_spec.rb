@@ -110,6 +110,7 @@ describe Oystercard do
       subject.top_up(10)
       subject.touch_in("Piccadilly")
       subject.touch_out("Waterloo")
+      subject.add_to_history
       expect(subject.history).to include({entry_station: "Piccadilly",  exit_station: "Waterloo"})
     end
 

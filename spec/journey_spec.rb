@@ -1,20 +1,23 @@
-require 'journey'
-require 'oystercard'
-
+require './lib/oystercard'
 
 describe Journey do
+
   describe "#fare" do
     it 'returns penalty fare' do
-      subject.complete?
-      expect(subject.fare).to eq 6
+      card = Oystercard.new
+      card.top_up(15)
+      subject.complete
+      card.touch_out("Waterloo")
+      expect(card.journey.fare).to eq Journey::PENALTY_FARE
     end
 
     it 'returns minimum fare' do
       card = Oystercard.new
       card.top_up(10)
-      card.touch_in("water")
-      card.touch_out("banana")
-      expect(subject.complete?).to eq true
+      card.touch_in("x")
+      card.touch_out("y")
+      card.journey.complete
+      expect(card.journey.fare).to eq Journey::MINIMUM_FARE
     end
   end
 
