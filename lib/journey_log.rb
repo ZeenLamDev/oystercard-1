@@ -19,4 +19,8 @@ class Journeylog
     @history << @journey
   end
 
+  def history
+    @history.dup
+  end
+
 end
