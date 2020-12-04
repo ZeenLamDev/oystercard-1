@@ -13,6 +13,7 @@ class Journeylog
   
   def add_exit(station)
     @journey.station_exit(station)
+    add_journey
   end
 
   def add_journey

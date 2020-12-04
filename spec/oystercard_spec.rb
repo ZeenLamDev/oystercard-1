@@ -2,7 +2,12 @@ require 'oystercard'
 require 'journey'
 
 describe Oystercard do
-  let(:station){double :station}
+  let(:journey) { double :journey, fare: 5 }
+  let(:journeylog) { double :journeylog, journey: journey }
+  let(:journeylog_class) { double :journeylog_class, new: journeylog }
+  let(:station) {double :station}
+  subject {described_class.new(journeylog_class)}
+
   shared_context 'fully topped up oystercard' do
     before do
       @balance_limit = Oystercard::BALANCE_LIMIT
@@ -33,19 +38,12 @@ describe Oystercard do
       expect{ subject.top_up(1) }.to raise_error "Can't exceed the limit of £#{@balance_limit}"
     end
  end
-
-  describe '#deduct' do
-    it 'should deduct amount from balance' do
-      subject.top_up(20)
-      expect{ subject.deduct(5) }.to change{ subject.balance}.by (-5)
-    end
-  end
   
   describe '#touch_in' do
     include_context "fully topped up oystercard"
     it 'can touch in' do
+      expect(journeylog).to receive(:add_entry).with(station)
       subject.touch_in(station)
-      expect(subject.journey.complete).to eq false
     end
   end
   
@@ -57,53 +55,14 @@ describe Oystercard do
   
   describe '#touch_out' do
     it 'can touch out' do
-      subject.top_up(50)
-      subject.touch_in(station)
+      expect(journeylog).to receive(:add_exit).with(station)
       subject.touch_out(station)
-      expect(subject.journey.complete).to eq true
     end
 
     it 'deducts fare when touch_out' do
-      minimum_fare = Journey::MINIMUM_FARE
+      allow(journeylog).to receive(:add_exit).with(station)
       subject.top_up(10)
-      subject.touch_in(station)
-      subject.touch_out(station)
-      expect{ subject.touch_out(station) }.to change{ subject.balance }.by(-minimum_fare)
+      expect{ subject.touch_out(station) }.to change{ subject.balance }.by(-5)
     end
   end
-
-  describe '#entry_station' do
-  
-    it 'stores the entry station' do
-      subject.top_up(10)
-      subject.touch_in(station)
-      expect(subject.journey.entry_station).to eq station
-    end
-  end
-  
-  describe '#exit_station' do
-  
-    it 'stores the exit station' do
-      subject.top_up(10)
-      subject.touch_in(station)
-      subject.touch_out(station)
-      expect(subject.journey.exit_station).to eq station
-    end
-  end
-
-  describe "#history" do
-
-    it 'adds entry_station and exit_station to history' do
-      subject.top_up(10)
-      subject.touch_in("Piccadilly")
-      subject.touch_out("Waterloo")
-      subject.add_to_history
-      expect(subject.history).to include({entry_station: "Piccadilly",  exit_station: "Waterloo"})
-    end
-
-    it 'returns an empty array on initialize' do
-      expect(subject.history).to eq []
-    end
-  end
-
 end

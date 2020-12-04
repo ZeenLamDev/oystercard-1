@@ -8,9 +8,9 @@ class Oystercard
   BALANCE_LIMIT = 90
   MINIMUM_BALANCE = 1
 
-  def initialize
+  def initialize(journeylog = Journeylog)
     @balance = 0
-    @journeylog = Journeylog.new
+    @journeylog = journeylog.new
   end
 
   def top_up(amount)
@@ -27,17 +27,13 @@ class Oystercard
 
   def touch_out(station)
     @journeylog.add_exit(station)
-    @journeylog.add_journey
     deduct
   end
 
+  private
+
   def deduct
     @balance -= @journeylog.journey.fare
-  end
-
-  private
-  def deduct_fare(fare = MINIMUM_FARE)
-    @balance -= fare
   end
 
 end
