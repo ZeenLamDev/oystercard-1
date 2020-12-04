@@ -21,7 +21,6 @@ class Oystercard
   def touch_in(station)
     fail "Have insufficient funds" if @balance < MINIMUM_BALANCE
     @journeylog.add_entry(station)
-    @journeylog
   end
 
   def touch_out(station)

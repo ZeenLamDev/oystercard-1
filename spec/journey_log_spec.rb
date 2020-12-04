@@ -20,6 +20,7 @@ describe Journeylog do
       expect(journey_class).to receive(:new)
       expect(journey).to receive(:station_entry).with(station_1)
       expect(journey).to receive(:station_exit).with(station_2)
+      allow(journey).to receive(:full_journey)
       subject.add_entry(station_1)
       subject.add_exit(station_2)
     end
@@ -29,6 +30,7 @@ describe Journeylog do
     it "adds a journey to the history" do
       expect(journey_class).to receive(:new)
       expect(journey).to receive(:station_entry).with(station_1)
+      allow(journey).to receive(:full_journey) { journey }
       subject.add_entry(station_1)
       subject.add_journey
       expect(subject.history).to include(journey)

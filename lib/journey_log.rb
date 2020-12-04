@@ -1,5 +1,5 @@
 class Journeylog
-  attr_reader :history, :journey
+  attr_reader :journey
 
   def initialize(journey_class = Journey)
     @history = []
@@ -17,7 +17,7 @@ class Journeylog
   end
 
   def add_journey
-    @history << @journey
+    @history << @journey.full_journey
   end
 
   def history
