@@ -18,13 +18,6 @@ class Journey
   def complete
     entry_station != nil && exit_station != nil ? true : false
   end
-<<<<<<< HEAD
-=======
-
-  # def complete
-  #   @entry_station != nil && @exit_station != nil ? @finished_journey = true : false
-  # end
->>>>>>> 60e4f8fdbef029de2a7aa41342294c01cce09383
 
   def station_entry(station)
     @entry_station = station
