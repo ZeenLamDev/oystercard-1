@@ -2,8 +2,8 @@ require 'oystercard'
 require 'journey'
 
 describe Oystercard do
-  let(:journey) { double :journey, fare: 5 }
-  let(:journeylog) { double :journeylog, journey: journey }
+  let(:journey) { double :journey, fare: 5, complete: true }
+  let(:journeylog) { double :journeylog, journey: journey, history: [journey] }
   let(:journeylog_class) { double :journeylog_class, new: journeylog }
   let(:station) {double :station}
   subject {described_class.new(journeylog_class)}
@@ -44,6 +44,14 @@ describe Oystercard do
     it 'can touch in' do
       expect(journeylog).to receive(:add_entry).with(station)
       subject.touch_in(station)
+    end
+
+    it "charges a penalty fare if user hasn't touched out from previous trip" do
+      allow(journeylog).to receive(:add_entry).with(station)
+      allow(journey).to receive(:complete) { false }
+      allow(journey).to receive(:fare) { Journey::PENALTY_FARE }
+      subject.touch_in(station)
+      expect{ subject.touch_in(station) }.to change{ subject.balance }.by(-Journey::PENALTY_FARE)
     end
   end
   

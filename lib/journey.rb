@@ -12,7 +12,7 @@ class Journey
   end
 
   def fare
-    complete ? MINIMUM_FARE : PENALTY_FARE
+    complete ? calculate_zones : PENALTY_FARE
   end
 
   def complete
@@ -30,6 +30,10 @@ class Journey
 
   def full_journey
     {:entry_station => @entry_station, :exit_station => @exit_station}
+  end
+
+  def calculate_zones
+    @entry_station.zone == @exit_station.zone ? 1 : (@entry_station.zone - @exit_station.zone).abs + 1
   end
 
 end

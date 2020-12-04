@@ -19,6 +19,7 @@ class Oystercard
   end
 
   def touch_in(station)
+    deduct unless @journeylog.history.empty? || @journeylog.journey.complete
     fail "Have insufficient funds" if @balance < MINIMUM_BALANCE
     @journeylog.add_entry(station)
   end
